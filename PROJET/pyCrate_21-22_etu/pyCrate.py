@@ -11,7 +11,6 @@ from outils import \
 VALEUR_COUP: int = 50
 
 
-
 # Fonctions à développer
 
 def jeu_en_cours(caisses: list, cibles: list) -> bool:
@@ -23,7 +22,6 @@ def jeu_en_cours(caisses: list, cibles: list) -> bool:
     """
 
     pass
-
 
 
 def charger_niveau(joueur: list, caisses: list, cibles: list, murs: list, path: str):
@@ -38,7 +36,7 @@ def charger_niveau(joueur: list, caisses: list, cibles: list, murs: list, path: 
     :return:
     """
     x: int = 0
-    y:int = 0
+    y: int = 0
     with open(path, "r") as file:
         for ligne in file.readlines():
             for char in ligne:
@@ -61,6 +59,7 @@ def charger_niveau(joueur: list, caisses: list, cibles: list, murs: list, path: 
             x = 0
             y += 1
 
+
 def definir_mouvement(direction: str, can, joueur: list, murs: list, caisses: list, liste_image: list):
     """
     Fonction permettant de définir les cases de destinations (il y en a 2 si le joueur pousse une caisse) selon la
@@ -73,43 +72,27 @@ def definir_mouvement(direction: str, can, joueur: list, murs: list, caisses: li
     :param liste_image: liste des images (murs, caisses etc...) détaillée dans l'énoncé
     :return:
     """
+    x: int = joueur[0].get_x()
+    y: int = joueur[0].get_y()
 
-    #for caisse in caisses :
-        
-    #    if direction == "haut" :
-    #        if caisse.get_x() == joueur[0].get_x() - 1 :
-    #            effectuer_mouvement(caisses, murs, joueur, can, -1, 0, 0, 0, liste_image)
+    if direction == "haut":
+        y -= 1
+        effectuer_mouvement(caisses, murs, joueur, can, 0, 0, x, y, liste_image)
 
-    #    elif direction == "bas" :
-    #        if caisse.get_x() == joueur[0].get_x() + 1 :
-    #            effectuer_mouvement(caisses, murs, joueur, can, 1, 0, 0, 0, liste_image)
+    elif direction == "bas":
+        y += 1
+        effectuer_mouvement(caisses, murs, joueur, can, 0, 0, x, y, liste_image)
 
-    #    elif direction == "gauche" :
-    #        if caisse.get_y() == joueur[0].get_y() - 1 :
-    #            effectuer_mouvement(caisses, murs, joueur, can, 0, -1, 0, 0, liste_image)
+    elif direction == "gauche":
+        x -= 1
+        effectuer_mouvement(caisses, murs, joueur, can, 0, 0, x, y, liste_image)
 
-    #    elif direction == "droite" :
-    #        if caisse.get_y() == joueur[0].get_y() + 1 :
-    #            effectuer_mouvement(caisses, murs, joueur, can, 0, 1, 0, 0, liste_image)
 
-    for mur in murs :
-        if direction == "haut" :
-            if mur.get_y() != joueur[0].get_y() - 1 :
-                effectuer_mouvement(caisses, murs, joueur, can, 0, 0, 0, -1, liste_image)
-
-        elif direction == "bas" :
-            if mur.get_y() != joueur[0].get_y() + 1 :
-                effectuer_mouvement(caisses, murs, joueur, can, 0, 0, 0, 1, liste_image)
-
-        elif direction == "gauche" :
-            if mur.get_x() != joueur[0].get_x() - 1 :
-                effectuer_mouvement(caisses, murs, joueur, can, 0, 0, -1, 0, liste_image)
-
-        elif direction == "droite" :
-            if mur.get_x() != joueur[0].get_x() + 1 :
-                effectuer_mouvement(caisses, murs, joueur, can, 0, 0, 1, 0, liste_image)
+    elif direction == "droite":
+        x += 1
+        effectuer_mouvement(caisses, murs, joueur, can, 0, 0, x, y, liste_image)
     pass
-    
+
 
 def effectuer_mouvement(caisses: list, murs: list, joueur: list, can,
                         deplace_caisse_x: int, deplace_caisse_y: int, deplace_joueur_x: int, deplace_joueur_y: int,
@@ -129,14 +112,14 @@ def effectuer_mouvement(caisses: list, murs: list, joueur: list, can,
     :param liste_image: liste des images (murs, caisses etc...) détaillée dans l'énoncé
     :return:
     """
-    if deplace_caisse_x != 0 or deplace_caisse_y != 0 :
-        for ind_caisse in range(caisses.__sizeof__() - 1) :
-            if caisses[ind_caisse].get_x() - deplace_caisse_x == joueur[0].get_x() and caisses[ind_caisse].get_y() - deplace_caisse_y == joueur[0].get_y() :
-                caisses[ind_caisse].x += deplace_caisse_x
-                caisses[ind_caisse].y += deplace_caisse_y
+    for j in joueur:
+        if j == joueur[0]:
+            creer_image(can, joueur[len(joueur) - 1].get_x(), joueur[len(joueur) - 1].get_y(),
+                        liste_image[6])  # Remplacement de l'image du joueur par l'image du sol
+            joueur.remove(j)
+            joueur.append(creer_personnage(deplace_joueur_x,
+                                           deplace_joueur_y))  # Création du nouveau joueur avec ses nouvelles valeurs
 
-    joueur[0].x += deplace_joueur_x
-    joueur[0].y += deplace_joueur_y
     pass
 
 
@@ -148,7 +131,6 @@ def chargement_score(scores_file_path: str, dict_scores: dict):
     :return:
     """
     pass
-    
 
 
 def maj_score(niveau_en_cours: int, dict_scores: dict) -> str:
@@ -163,7 +145,6 @@ def maj_score(niveau_en_cours: int, dict_scores: dict) -> str:
     :return str: Le str contenant l'affichage pour les scores ("\n" pour passer à la ligne)
     """
     pass
-    
 
 
 def calcule_score(temps_initial: float, nb_coups: int, score_base: int) -> int:
@@ -175,6 +156,7 @@ def calcule_score(temps_initial: float, nb_coups: int, score_base: int) -> int:
     :return: le score du jouer
     """
     pass
+
 
 def enregistre_score(temps_initial: float, nb_coups: int, score_base: int, dict_scores: dict,
                      niveau_en_cours: int):
@@ -190,8 +172,6 @@ def enregistre_score(temps_initial: float, nb_coups: int, score_base: int, dict_
     :param niveau_en_cours: Le numéro du niveau en cours
     """
     pass
-    
-
 
 
 def update_score_file(scores_file_path: str, dict_scores: dict):
@@ -202,7 +182,6 @@ def update_score_file(scores_file_path: str, dict_scores: dict):
     :return:
     """
     pass
-    
 
 
 if __name__ == '__main__':
