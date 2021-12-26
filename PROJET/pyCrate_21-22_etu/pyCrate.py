@@ -1,10 +1,8 @@
-import time
 
 from fourni import simulateur
 from outils import \
     creer_image, \
-    creer_caisse, creer_case_vide, creer_cible, creer_mur, creer_personnage, \
-    coordonnee_x, coordonnee_y, est_egal_a
+    creer_caisse, creer_cible, creer_mur, creer_personnage
 
 # Constante à utiliser
 
@@ -74,29 +72,123 @@ def definir_mouvement(direction: str, can, joueur: list, murs: list, caisses: li
     """
     x: int = joueur[0].get_x()
     y: int = joueur[0].get_y()
+    x_caisse: int = 0
+    y_caisse: int = 0
+    index_caisse: int = -1
 
-    if direction == "haut":
-        y -= 1
-        effectuer_mouvement(caisses, murs, joueur, can, 0, 0, x, y, liste_image)
+    peutBouger: bool = True # Jusqu'à preuve du contraire, le joueur peut bouger -> si il y a un mur ou une caisse, il ne peut pas
+    peutBougerCaisse: bool = False # Jusqu'à preuve du contraire, aucune caisse ne peut être bougée
 
-    elif direction == "bas":
-        y += 1
-        effectuer_mouvement(caisses, murs, joueur, can, 0, 0, x, y, liste_image)
+        
+    for mur in murs : # Vérification de la position de chaque mur pour voir si il y en a un dans la case adjacente, où le joueur va
+        if direction == "haut" :
+            peutBouger = caisse_ou_mur_pas_dans_coordonee(x, y - 1, caisses, murs)
+            #if mur.get_y() == y - 1 and mur.get_x() == x :
+            #    peutBouger = False
+            #    break
 
-    elif direction == "gauche":
-        x -= 1
-        effectuer_mouvement(caisses, murs, joueur, can, 0, 0, x, y, liste_image)
+        elif direction == "bas" :
+            peutBouger = caisse_ou_mur_pas_dans_coordonee(x, y + 1, caisses, murs)
+            #if mur.get_y() == y + 1 and mur.get_x() == x :
+            #    peutBouger = False
+            #    break
 
+        elif direction == "gauche" :
+            peutBouger = caisse_ou_mur_pas_dans_coordonee(x - 1, y, caisses, murs)
+            #if mur.get_x() == x - 1 and mur.get_y() == y  :
+            #    peutBouger = False
+            #    break
 
-    elif direction == "droite":
-        x += 1
-        effectuer_mouvement(caisses, murs, joueur, can, 0, 0, x, y, liste_image)
+        elif direction == "droite" :
+            peutBouger = caisse_ou_mur_pas_dans_coordonee(x + 1, y, caisses, murs)
+            #if mur.get_x() == x + 1 and mur.get_y() == y :
+            #    peutBouger = False
+            #    break
+
+    if peutBouger == False : # Vérification de si une caisse peut être bougée
+        for index in range(len(caisses)) :
+            if direction == "haut" :
+                if caisses[index].get_y() == y - 1 and caisses[index].get_x() == x :
+                    peutBougerCaisse = caisse_ou_mur_pas_dans_coordonee(x, y - 2, caisses, murs)
+            elif direction == "bas" :
+                if caisses[index].get_y() == y + 1 and caisses[index].get_x() == x :
+                    peutBougerCaisse = caisse_ou_mur_pas_dans_coordonee(x, y + 2, caisses, murs)
+            elif direction == "gauche" :
+                if caisses[index].get_x() == x - 1 and caisses[index].get_y() == y :
+                    peutBougerCaisse = caisse_ou_mur_pas_dans_coordonee(x - 2, y, caisses, murs)
+            elif direction == "droite" :
+                if caisses[index].get_x() == x + 1 and caisses[index].get_y() == y :
+                    peutBougerCaisse = caisse_ou_mur_pas_dans_coordonee(x + 2, y, caisses, murs)
+            index_caisse = index
+
+            if peutBougerCaisse:
+                x_caisse = caisses[index].get_x()
+                y_caisse = caisses[index].get_y()
+                break
+
+        for caisse in caisses :
+            if direction == "haut" :
+                if caisse.get_y() == y - 1 and caisse.get_x() == x :
+                    peutBougerCaisse = caisse_ou_mur_pas_dans_coordonee(x, y - 2, caisses, murs)
+            elif direction == "bas" :
+                if caisse.get_y() == y + 1 and caisse.get_x() == x :
+                    peutBougerCaisse = caisse_ou_mur_pas_dans_coordonee(x, y + 2, caisses, murs)
+            elif direction == "gauche" :
+                if caisse.get_x() == x - 1 and caisse.get_y() == y :
+                    peutBougerCaisse = caisse_ou_mur_pas_dans_coordonee(x - 2, y, caisses, murs)
+            elif direction == "droite" :
+                if caisse.get_x() == x + 1 and caisse.get_y() == y :
+                    peutBougerCaisse = caisse_ou_mur_pas_dans_coordonee(x + 2, y, caisses, murs)
+    if peutBouger :
+        if direction == "haut":
+            y -= 1
+            effectuer_mouvement(caisses, murs, joueur, can, 0, 0, x, y, liste_image)
+
+        elif direction == "bas":
+            y += 1
+            effectuer_mouvement(caisses, murs, joueur, can, 0, 0, x, y, liste_image)
+
+        elif direction == "gauche":
+            x -= 1
+            effectuer_mouvement(caisses, murs, joueur, can, 0, 0, x, y, liste_image)
+
+        elif direction == "droite":
+            x += 1
+            effectuer_mouvement(caisses, murs, joueur, can, 0, 0, x, y, liste_image)
+
+    if peutBougerCaisse :
+        if direction == "haut":
+            y_caisse -= 1
+            effectuer_mouvement(caisses, murs, joueur, can, x_caisse, y_caisse, x, y, liste_image, index_caisse)
+
+        elif direction == "bas":
+            y_caisse += 1
+            effectuer_mouvement(caisses, murs, joueur, can, x_caisse, y_caisse, x, y, liste_image, index_caisse)
+
+        elif direction == "gauche":
+            x_caisse -= 1
+            effectuer_mouvement(caisses, murs, joueur, can, x_caisse, y_caisse, x, y, liste_image, index_caisse)
+
+        elif direction == "droite":
+            x_caisse += 1
+            effectuer_mouvement(caisses, murs, joueur, can, x_caisse, y_caisse, x, y, liste_image, index_caisse)
+
     pass
 
+def caisse_ou_mur_pas_dans_coordonee(coordonee_x: int, coordonee_y: int, caisses: list, murs: list):
+    for caisse in caisses :
+        if caisse.get_x() == coordonee_x and caisse.get_y() == coordonee_y :
+            return False
+    for mur in murs:
+        if mur.get_x() == coordonee_x and mur.get_y() == coordonee_y :
+            return False
+
+    return True
+    pass
 
 def effectuer_mouvement(caisses: list, murs: list, joueur: list, can,
                         deplace_caisse_x: int, deplace_caisse_y: int, deplace_joueur_x: int, deplace_joueur_y: int,
-                        liste_image: list):
+                        liste_image: list, ind_caisse: int = -1):
     """
     Fonction permettant d'effectuer le déplacement ou de ne pas l'effectuer si celui-ci n'est pas possible.
     Voir énoncé "Quelques règles".
@@ -119,7 +211,12 @@ def effectuer_mouvement(caisses: list, murs: list, joueur: list, can,
             joueur.remove(j)
             joueur.append(creer_personnage(deplace_joueur_x,
                                            deplace_joueur_y))  # Création du nouveau joueur avec ses nouvelles valeurs
-
+    if ind_caisse != -1:
+        creer_image(can, caisses[ind_caisse].get_x(), caisses[ind_caisse].get_y(),
+                    liste_image[6]) # Remplacement de l'image de la caisse par l'image du sol
+        caisses.remove(caisses[ind_caisse])
+        caisses.append(creer_caisse(deplace_caisse_x,
+                                    deplace_caisse_y)) # Création d'une nouvelle caisse avec ses nouvelles valeurs
     pass
 
 
