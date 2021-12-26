@@ -238,6 +238,24 @@ def chargement_score(scores_file_path: str, dict_scores: dict):
     :param dict_scores:  le dictionnaire pour le stockage
     :return:
     """
+    # variable globale
+    # dictionnaire pour charger les scores
+    dict_score = {}
+        # ouvre le fichier
+    with open(scores_file_path, "r") as f:
+        # lit chacune des lignes, qui correspond à un niveau
+        for line in f.readlines():
+            # sépare les données
+            data = line.split(';')
+            # extrait le numéro de niveau
+            # convertit le str en int
+            niveau = data[0]
+            # extrait les scores et les convertit
+            # array[1:] = tous les éléments de array de l'indice 1 à la fin
+            scores = [int(i) for i in data[1:]]
+            # enregistre dans le dictionnaire
+            dict_scores[niveau] = scores
+            print(dict_scores)
     pass
 
 
@@ -252,6 +270,14 @@ def maj_score(niveau_en_cours: int, dict_scores: dict) -> str:
     :param dict_scores: le dictionnaire pour stockant les scores
     :return str: Le str contenant l'affichage pour les scores ("\n" pour passer à la ligne)
     """
+    if niveau_en_cours == 2:
+            print(f"Niveau {niveau_en_cours}")
+            for key in dict_scores:
+                for i in range(len(dict_scores[key])) :
+
+                    print(f"{i+1}) {dict_scores[key][i]}", end='')
+                    print("")
+
     pass
 
 
@@ -263,6 +289,7 @@ def calcule_score(temps_initial: float, nb_coups: int, score_base: int) -> int:
     :param score_base: score de base
     :return: le score du jouer
     """
+
     pass
 
 
