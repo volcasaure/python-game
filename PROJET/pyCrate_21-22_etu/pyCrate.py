@@ -1,4 +1,3 @@
-
 from fourni import simulateur
 from outils import \
     creer_image, \
@@ -289,7 +288,8 @@ def calcule_score(temps_initial: float, nb_coups: int, score_base: int) -> int:
     :param score_base: score de base
     :return: le score du jouer
     """
-
+    score: int = score_base - (simulateur.time.time() - temps_initial) - (nb_coups * VALEUR_COUP)
+    return score
     pass
 
 
@@ -306,6 +306,8 @@ def enregistre_score(temps_initial: float, nb_coups: int, score_base: int, dict_
     :param dict_scores: Le dictionnaire stockant les scores
     :param niveau_en_cours: Le numéro du niveau en cours
     """
+
+    dict_scores[niveau_en_cours] = calcule_score(temps_initial, nb_coups, score_base)
     pass
 
 
@@ -316,6 +318,12 @@ def update_score_file(scores_file_path: str, dict_scores: dict):
     :param dict_scores: Le dictionnaire stockant les scores
     :return:
     """
+
+    with open(scores_file_path, "w") as file:
+        scores_str: str = ""
+        for key in dict_scores:
+            scores_str += str(key)
+        file.write(scores_str)
     pass
 
 
