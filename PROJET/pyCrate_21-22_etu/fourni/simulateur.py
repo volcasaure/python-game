@@ -133,7 +133,7 @@ def init_menu(jeu: Jeu, fenetre: Tk):
 
 
 def check_status(jeu: Jeu):
-    if pyCrate.jeu_en_cours(jeu.caisses, jeu.cibles) and jeu.started:
+    if pyCrate.partie_terminee(jeu.caisses, jeu.cibles) and jeu.started:
         affichage_jeu(jeu)
         save_score(jeu)
         jeu.can.bind_all("<Right>")
