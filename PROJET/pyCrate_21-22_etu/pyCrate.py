@@ -11,14 +11,25 @@ VALEUR_COUP: int = 50
 
 # Fonctions à développer
 
-def jeu_en_cours(caisses: list, cibles: list) -> bool:
+def partie_terminee(caisses: list, cibles: list) -> bool:
     """
-    Fonction testant si le jeu est encore en cours et retournant un booléen comme réponse sur l'état de la partie.
+    Fonction testant si la partie est terminée et retournant un booléen comme réponse sur l'état de la partie.
     :param caisses: La liste des caisses du niveau en cours
     :param cibles: La liste des cibles du niveau en cours
     :return: True si la partie est finie, False sinon
     """
 
+    for i in range(len(cibles)): # On parcourt toutes les cibles
+        caisseDansCible: bool = False
+        for j in range(len(caisses)): # Parcourir toutes les caisses pour voir si il y en a une sur une cible
+            if caisses[j].get_x() == cibles[i].get_x() and caisses[j].get_y() == cibles[i].get_y(): # S'il y a une caisse sur une cible
+                caisseDansCible = True
+
+        if caisseDansCible == False: # Si une caisse ne se trouve pas sur une cible, la partie continue
+            return False
+
+    # Si toutes les cibles avaient une caisse dessus, la partie est finie
+    return True
     pass
 
 
